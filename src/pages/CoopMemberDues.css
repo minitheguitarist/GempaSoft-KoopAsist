@@ -1,0 +1,256 @@
+.dues-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dues-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+/* Ensure controls are in a row */
+.year-automation-controls {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 6px;
+    backdrop-filter: blur(5px);
+}
+
+.year-selector {
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--glass-border);
+    padding-right: 8px;
+    margin-right: 8px;
+}
+
+.amount-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 12px;
+}
+
+.icon-btn-small {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.icon-btn-small:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-white);
+    transform: scale(1.1);
+}
+
+.btn-secondary-xs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(100, 255, 218, 0.1);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    color: var(--color-accent);
+    padding: 8px 16px;
+    /* Bigger button */
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-secondary-xs:hover {
+    background: rgba(100, 255, 218, 0.2);
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.1);
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.stat-card {
+    background: rgba(30, 30, 46, 0.6);
+    border: 1px solid var(--glass-border);
+    padding: var(--spacing-md);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* Accordion */
+.year-group {
+    background: transparent;
+    margin-bottom: 16px;
+}
+
+.year-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.year-header:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.year-header.expanded {
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.year-content {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 8px;
+}
+
+/* Dues List Item */
+.due-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    /* More padding */
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.due-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.due-info {
+    flex: 1;
+}
+
+.due-main-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    /* More space */
+}
+
+.due-card-details {
+    display: flex;
+    gap: 24px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    align-items: center;
+}
+
+.payment-progress-bar {
+    width: 150px;
+    /* Wider */
+    height: 10px;
+    /* Thicker */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.payment-progress-fill {
+    height: 100%;
+    background: var(--color-success);
+    transition: width 0.3s ease;
+}
+
+/* Orange for partial */
+.payment-progress-fill.partial {
+    background: #FFB86C;
+}
+
+.action-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #1a1b26;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    width: 400px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.text-warning {
+    color: #FFB86C !important;
+}

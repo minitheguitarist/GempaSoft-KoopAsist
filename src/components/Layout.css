@@ -1,0 +1,32 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+    /* Dynamic background */
+    background: radial-gradient(circle at top right, var(--color-navy), var(--color-grey-dark) 80%);
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: hidden;
+    /* Handle inner scroll if needed, or allow auto */
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.2);
+    /* Slightly darker for content contrast */
+}
+
+/* Page titles */
+.page-header {
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+.page-title {
+    font-size: 1.5rem;
+    color: var(--color-text-main);
+    font-weight: 600;
+}
