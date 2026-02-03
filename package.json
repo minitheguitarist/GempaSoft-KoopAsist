@@ -1,6 +1,7 @@
+{
   "name": "gempa-soft-koop-asist",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

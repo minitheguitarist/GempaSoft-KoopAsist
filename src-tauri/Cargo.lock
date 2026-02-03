@@ -1290,7 +1290,7 @@ dependencies = [
 
 [[package]]
 name = "gempa-soft-koop-asist"
-version = "0.1.2"
+version = "0.1.0"
 dependencies = [
  "chrono",
  "serde",
