@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Users, Building, PlusCircle, Search, Home } from 'lucide-react';
+import { Users, Building, PlusCircle } from 'lucide-react';
 import './Sidebar.css';
 
 export function Sidebar() {
     const location = useLocation();
-    
+
     // Helper to check if active
     const isActive = (path: string) => location.pathname === path;
 
@@ -13,7 +13,7 @@ export function Sidebar() {
             <div className="sidebar-header">
                 <h1 className="sidebar-title">Emlak Takip</h1>
             </div>
-            
+
             <nav>
                 <div className="nav-section">
                     <div className="nav-label">Üye İşlemleri</div>

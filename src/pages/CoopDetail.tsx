@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
-import { UserPlus, Calendar, Phone, ArrowLeft, CheckSquare, Square } from 'lucide-react';
+import { UserPlus, ArrowLeft } from 'lucide-react';
 import './CoopDetail.css';
 import '../pages/MemberList.css'; // Reuse table styles
 
