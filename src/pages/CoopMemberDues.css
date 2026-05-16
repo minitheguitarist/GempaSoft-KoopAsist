@@ -254,3 +254,31 @@
 .text-warning {
     color: #FFB86C !important;
 }
+/* Custom Select for Theme */
+.theme-select {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--color-accent);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-align: center;
+    min-width: 80px;
+}
+
+.theme-select:hover, .theme-select:focus {
+    border-color: rgba(100, 255, 218, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.theme-select option {
+    background-color: var(--color-navy-light);
+    color: var(--color-text-main);
+    padding: 8px;
+}

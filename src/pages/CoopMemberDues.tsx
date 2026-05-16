@@ -31,9 +31,10 @@ export default function CoopMemberDues() {
     const [dues, setDues] = useState<Due[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // New State for Year & Automation
+    // State for Payment Creation
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-    const [yearlyTotalAmount, setYearlyTotalAmount] = useState<string>('');
+    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
+    const [dueAmount, setDueAmount] = useState<string>('');
     const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set([new Date().getFullYear()]));
 
     // Payment Modal
@@ -42,6 +43,7 @@ export default function CoopMemberDues() {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedDue, setSelectedDue] = useState<Due | null>(null);
     const [payAmount, setPayAmount] = useState('');
+    const [payDate, setPayDate] = useState('');
     const [editAmount, setEditAmount] = useState('');
 
     useEffect(() => {
@@ -62,17 +64,18 @@ export default function CoopMemberDues() {
         }
     };
 
-    const handleGenerateYearlyDues = async () => {
-        if (!yearlyTotalAmount || isNaN(Number(yearlyTotalAmount))) {
-            alert('Lütfen geçerli bir yıllık tutar giriniz.');
+    const handleAddDue = async () => {
+        if (!dueAmount || isNaN(Number(dueAmount))) {
+            alert('Lütfen geçerli bir tutar giriniz.');
             return;
         }
 
         try {
-            await invoke('generate_yearly_dues', {
+            await invoke('add_extra_due', {
                 coopMemberId: Number(memberId),
                 year: selectedYear,
-                totalAmount: Number(yearlyTotalAmount)
+                month: selectedMonth,
+                amount: Number(dueAmount)
             });
             fetchDues();
 
@@ -81,9 +84,9 @@ export default function CoopMemberDues() {
                 toggleYear(selectedYear);
             }
 
-            alert(`${selectedYear} yılı için aidatlar oluşturuldu/güncellendi.`);
+            setDueAmount(''); // Reset input
         } catch (error) {
-            console.error('Aidat oluşturma hatası:', error);
+            console.error('Aidat ekleme hatası:', error);
             alert(`Hata: ${error}`);
         }
     };
@@ -114,6 +117,7 @@ export default function CoopMemberDues() {
         setSelectedDue(due);
         // Default to remaining amount
         setPayAmount((due.amount - due.paid_amount).toString());
+        setPayDate(new Date().toISOString().split('T')[0]);
         setShowPayModal(true);
     };
 
@@ -151,14 +155,14 @@ export default function CoopMemberDues() {
     };
 
     const handlePayment = async () => {
-        if (!selectedDue || !payAmount) return;
+        if (!selectedDue || !payAmount || !payDate) return;
 
         try {
             await invoke('pay_due', {
                 args: {
                     due_id: selectedDue.id,
                     amount: Number(payAmount),
-                    payment_date: new Date().toISOString().split('T')[0]
+                    payment_date: payDate
                 }
             });
             setShowPayModal(false);
@@ -400,7 +404,7 @@ export default function CoopMemberDues() {
                     </div>
                 </div>
 
-                {/* Year Automation Controls */}
+                {/* Due Creation Controls */}
                 <div className="year-automation-controls flex bg-glass-panel border border-glass-border rounded-lg p-1 items-center">
                     <div className="flex items-center border-r border-glass-border pr-2 mr-2">
                         <button className="icon-btn-small" onClick={() => changeYear(-1)}>
@@ -412,20 +416,41 @@ export default function CoopMemberDues() {
                         </button>
                     </div>
 
+                    <div className="flex items-center border-r border-glass-border pr-2 mr-2">
+                        <select 
+                            className="theme-select"
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                        >
+                            <option value={1}>Ocak</option>
+                            <option value={2}>Şubat</option>
+                            <option value={3}>Mart</option>
+                            <option value={4}>Nisan</option>
+                            <option value={5}>Mayıs</option>
+                            <option value={6}>Haziran</option>
+                            <option value={7}>Temmuz</option>
+                            <option value={8}>Ağustos</option>
+                            <option value={9}>Eylül</option>
+                            <option value={10}>Ekim</option>
+                            <option value={11}>Kasım</option>
+                            <option value={12}>Aralık</option>
+                        </select>
+                    </div>
+
                     <div className="flex items-center gap-2 mr-2">
-                        <span className="text-xs text-muted">Yıllık Tutar:</span>
+                        <span className="text-xs text-muted">Tutar:</span>
                         <input
                             type="number"
                             placeholder="0"
-                            value={yearlyTotalAmount}
-                            onChange={(e) => setYearlyTotalAmount(e.target.value)}
+                            value={dueAmount}
+                            onChange={(e) => setDueAmount(e.target.value)}
                             className="bg-transparent border-b border-glass-border w-24 text-center outline-none text-accent text-sm py-1"
                         />
                     </div>
 
-                    <button className="btn-secondary-xs flex items-center gap-1" onClick={handleGenerateYearlyDues}>
-                        <RotateCw size={14} />
-                        Hesapla / Dağıt
+                    <button className="btn-secondary-xs flex items-center gap-1" onClick={handleAddDue}>
+                        <Plus size={14} />
+                        Ödeme Ekle
                     </button>
                 </div>
             </div>
@@ -591,7 +616,7 @@ export default function CoopMemberDues() {
                                 <strong>Dönem:</strong> {new Date(selectedDue.period).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}<br />
                                 <strong>Kalan Borç:</strong> {selectedDue.amount - selectedDue.paid_amount} ₺
                             </p>
-                            <div className="form-group">
+                            <div className="form-group mb-4">
                                 <label className="form-label">Ödenecek Tutar</label>
                                 <input
                                     type="number"
@@ -599,6 +624,15 @@ export default function CoopMemberDues() {
                                     value={payAmount}
                                     onChange={e => setPayAmount(e.target.value)}
                                     autoFocus
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Ödeme Tarihi</label>
+                                <input
+                                    type="date"
+                                    className="form-input"
+                                    value={payDate}
+                                    onChange={e => setPayDate(e.target.value)}
                                 />
                             </div>
                         </div>
