@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
-import { ArrowLeft, CreditCard, RotateCw, Wallet, Edit2, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Trash2, FileText } from 'lucide-react';
+import { ArrowLeft, CreditCard, Wallet, Edit2, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Trash2, FileText } from 'lucide-react';
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } from 'docx';
 import { save, ask } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
