@@ -53,6 +53,7 @@ pub async fn init_db(app_handle: &AppHandle) -> Result<AppState, String> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             start_date TEXT NOT NULL,
+            archived INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS cooperative_members (
@@ -78,6 +79,17 @@ pub async fn init_db(app_handle: &AppHandle) -> Result<AppState, String> {
     .execute(&db)
     .await
     .map_err(|e| e.to_string())?;
+
+    // Migration: Add 'archived' column to cooperatives if it doesn't exist
+    let check_archived = sqlx::query("SELECT archived FROM cooperatives LIMIT 1")
+        .fetch_optional(&db)
+        .await;
+
+    if check_archived.is_err() {
+        let _ = sqlx::query("ALTER TABLE cooperatives ADD COLUMN archived INTEGER DEFAULT 0")
+            .execute(&db)
+            .await;
+    }
 
     Ok(AppState { db })
 }

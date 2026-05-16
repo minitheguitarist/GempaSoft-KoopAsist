@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { ask } from '@tauri-apps/plugin-dialog';
 import { Search, Edit, Trash2, User } from 'lucide-react';
 import './MemberList.css';
 
@@ -67,6 +68,26 @@ export default function MemberList() {
         } catch (error) {
             console.error('Güncelleme hatası:', error);
             alert(`Güncelleme başarısız: ${error}`);
+        }
+    };
+
+    const handleDeleteMember = async () => {
+        if (!selectedMember) return;
+        const confirmed = await ask(
+            `"${selectedMember.full_name}" adlı üyeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`,
+            { title: 'Üye Sil', kind: 'warning' }
+        );
+        if (!confirmed) return;
+
+        try {
+            await invoke('delete_member', { id: selectedMember.id });
+            alert('Üye başarıyla silindi!');
+            setSelectedMember(null);
+            setIsEditing(false);
+            fetchMembers();
+        } catch (error) {
+            console.error('Silme hatası:', error);
+            alert(`Silme başarısız: ${error}`);
         }
     };
 
@@ -211,7 +232,7 @@ export default function MemberList() {
                                         <button className="icon-btn" onClick={handleEditClick} title="Düzenle">
                                             <Edit size={18} /> Düzenle
                                         </button>
-                                        <button className="btn-danger"><Trash2 size={16} /> Sil</button>
+                                        <button className="btn-danger" onClick={handleDeleteMember}><Trash2 size={16} /> Sil</button>
                                     </div>
                                 </div>
                             )}

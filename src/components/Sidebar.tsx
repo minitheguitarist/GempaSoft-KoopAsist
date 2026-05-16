@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Users, Building, PlusCircle } from 'lucide-react';
+import { Users, Building, PlusCircle, Archive } from 'lucide-react';
 import './Sidebar.css';
 
 export function Sidebar() {
@@ -36,6 +36,10 @@ export function Sidebar() {
                     <Link to="/coops" className={`nav-item ${isActive('/coops') ? 'active' : ''}`}>
                         <Building className="nav-icon" />
                         <span>Kooperatifler</span>
+                    </Link>
+                    <Link to="/coops/archive" className={`nav-item ${isActive('/coops/archive') ? 'active' : ''}`}>
+                        <Archive className="nav-icon" />
+                        <span>Arşiv</span>
                     </Link>
                 </div>
             </nav>

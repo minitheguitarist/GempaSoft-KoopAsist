@@ -26,6 +26,7 @@ pub struct Cooperative {
     pub id: i64,
     pub name: String,
     pub start_date: String,
+    pub archived: Option<i64>,
     pub created_at: Option<String>,
 }
 

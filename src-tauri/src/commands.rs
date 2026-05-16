@@ -367,7 +367,7 @@ pub async fn get_available_members(state: State<'_, AppState>, coop_id: i64) -> 
 #[tauri::command]
 pub async fn get_coop_details(state: State<'_, AppState>, id: i64) -> Result<Cooperative, String> {
     let coop = sqlx::query_as::<_, Cooperative>(
-        "SELECT id, name, start_date, created_at FROM cooperatives WHERE id = ?"
+        "SELECT id, name, start_date, archived, created_at FROM cooperatives WHERE id = ?"
     )
     .bind(id)
     .fetch_optional(&state.db)
@@ -398,13 +398,73 @@ pub async fn create_coop(
 #[tauri::command]
 pub async fn get_coops(state: State<'_, AppState>) -> Result<Vec<Cooperative>, String> {
     let coops = sqlx::query_as::<_, Cooperative>(
-        "SELECT id, name, start_date, created_at FROM cooperatives ORDER BY start_date DESC"
+        "SELECT id, name, start_date, archived, created_at FROM cooperatives WHERE archived = 0 ORDER BY start_date DESC"
     )
     .fetch_all(&state.db)
     .await
     .map_err(|e| e.to_string())?;
 
     Ok(coops)
+}
+
+#[tauri::command]
+pub async fn get_archived_coops(state: State<'_, AppState>) -> Result<Vec<Cooperative>, String> {
+    let coops = sqlx::query_as::<_, Cooperative>(
+        "SELECT id, name, start_date, archived, created_at FROM cooperatives WHERE archived = 1 ORDER BY start_date DESC"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|e| e.to_string())?;
+
+    Ok(coops)
+}
+
+#[tauri::command]
+pub async fn archive_coop(state: State<'_, AppState>, id: i64) -> Result<(), String> {
+    sqlx::query("UPDATE cooperatives SET archived = 1 WHERE id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn unarchive_coop(state: State<'_, AppState>, id: i64) -> Result<(), String> {
+    sqlx::query("UPDATE cooperatives SET archived = 0 WHERE id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn delete_coop(state: State<'_, AppState>, id: i64) -> Result<(), String> {
+    // Delete dues linked to this coop's members
+    sqlx::query(
+        "DELETE FROM dues WHERE coop_member_id IN (SELECT id FROM cooperative_members WHERE coop_id = ?)"
+    )
+    .bind(id)
+    .execute(&state.db)
+    .await
+    .map_err(|e| e.to_string())?;
+
+    // Delete cooperative_members
+    sqlx::query("DELETE FROM cooperative_members WHERE coop_id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    // Delete the cooperative itself
+    sqlx::query("DELETE FROM cooperatives WHERE id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -437,6 +497,34 @@ pub async fn get_members(state: State<'_, AppState>) -> Result<Vec<Member>, Stri
     .map_err(|e| e.to_string())?;
 
     Ok(members)
+}
+
+#[tauri::command]
+pub async fn delete_member(state: State<'_, AppState>, id: i64) -> Result<(), String> {
+    // First delete related dues (linked via cooperative_members.id)
+    sqlx::query(
+        "DELETE FROM dues WHERE coop_member_id IN (SELECT id FROM cooperative_members WHERE member_id = ?)"
+    )
+    .bind(id)
+    .execute(&state.db)
+    .await
+    .map_err(|e| e.to_string())?;
+
+    // Then delete related cooperative_members entries
+    sqlx::query("DELETE FROM cooperative_members WHERE member_id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    // Finally delete the member itself
+    sqlx::query("DELETE FROM members WHERE id = ?")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
 }
 
 #[tauri::command]

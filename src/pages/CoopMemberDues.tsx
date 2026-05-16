@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
 import { ArrowLeft, CreditCard, RotateCw, Wallet, Edit2, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Trash2, FileText } from 'lucide-react';
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } from 'docx';
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, ask } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
 import { numberToTurkishWords } from '../utils/numberToText';
 import './CoopMemberDues.css';
@@ -137,7 +137,8 @@ export default function CoopMemberDues() {
 
     const handleDeleteDue = async () => {
         if (!selectedDue) return;
-        if (!confirm('Bu aidatı silmek istediğinize emin misiniz?')) return;
+        const confirmed = await ask('Bu aidatı silmek istediğinize emin misiniz?', { title: 'Aidat Sil', kind: 'warning' });
+        if (!confirmed) return;
 
         try {
             await invoke('delete_due', { id: selectedDue.id });

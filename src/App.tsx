@@ -8,6 +8,7 @@ import MemberList from './pages/MemberList';
 import MemberRegister from './pages/MemberRegister';
 
 import CoopList from './pages/CoopList';
+import CoopArchive from './pages/CoopArchive';
 import CoopRegister from './pages/CoopRegister';
 
 import CoopDetail from './pages/CoopDetail';
@@ -22,6 +23,7 @@ function App() {
           <Route path="members" element={<MemberList />} />
           <Route path="members/new" element={<MemberRegister />} />
           <Route path="coops" element={<CoopList />} />
+          <Route path="coops/archive" element={<CoopArchive />} />
           <Route path="coops/new" element={<CoopRegister />} />
           <Route path="coops/:id" element={<CoopDetail />} />
           <Route path="coops/:coopId/members/:memberId" element={<CoopMemberDues />} />
